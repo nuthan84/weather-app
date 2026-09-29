@@ -9,12 +9,20 @@ weather-app/
 └── backend/         ← Spring Boot API proxy
 ```
 
-## Quick Start
+## Quick Start (Single Command)
+
+Double-click `start.bat` or run in terminal:
+```cmd
+start.bat
+```
+
+---
+
+## Manual Start
 
 ### 1. Backend (Spring Boot)
 ```bash
 cd backend
-# Add your OpenWeatherMap API key in src/main/resources/application.properties
 ./mvnw spring-boot:run
 # Runs on http://localhost:8080
 ```
