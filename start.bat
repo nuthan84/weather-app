@@ -20,6 +20,16 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
+:: Ensure JAVA_HOME is set for Maven Wrapper
+if not defined JAVA_HOME (
+    for /f "delims=" %%i in ('where java 2^>nul') do (
+        if not defined JAVA_HOME (
+            set "JAVA_BIN_DIR=%%~dpi"
+            for %%j in ("!JAVA_BIN_DIR!\..") do set "JAVA_HOME=%%~fj"
+        )
+    )
+)
+
 :: 2. Check Node.js and npm
 where npm >nul 2>nul
 if %errorlevel% neq 0 (
@@ -60,14 +70,14 @@ if "%WEATHER_API_KEY%"=="" (
 :: 5. Launch Backend (Spring Boot) in dedicated window
 echo [INFO] Starting Backend (Spring Boot on port 8080)...
 if exist "backend\mvnw.cmd" (
-    start "Weather App - Backend (Port 8080)" cmd /c "title Weather App - Backend ^& cd /d "%~dp0backend" ^& call mvnw.cmd spring-boot:run"
+    start "Weather App - Backend (Port 8080)" /d "%~dp0backend" cmd /k "mvnw.cmd spring-boot:run"
 ) else (
-    start "Weather App - Backend (Port 8080)" cmd /c "title Weather App - Backend ^& cd /d "%~dp0backend" ^& call mvn spring-boot:run"
+    start "Weather App - Backend (Port 8080)" /d "%~dp0backend" cmd /k "mvn spring-boot:run"
 )
 
 :: 6. Launch Frontend (Vite) in dedicated window
 echo [INFO] Starting Frontend (Vite on port 5173)...
-start "Weather App - Frontend (Port 5173)" cmd /c "title Weather App - Frontend ^& cd /d "%~dp0frontend" ^& call npm run dev"
+start "Weather App - Frontend (Port 5173)" /d "%~dp0frontend" cmd /k "npm run dev"
 
 echo.
 echo ==============================================================
@@ -79,7 +89,7 @@ echo   Health   : http://localhost:8080/api/weather/health
 echo ==============================================================
 echo.
 echo Opening http://localhost:5173 in your default browser...
-timeout /t 3 /nobreak >nul 2>nul
+timeout /t 4 /nobreak >nul 2>nul
 start "" "http://localhost:5173"
 
 echo.
